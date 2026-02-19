@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lightbox Productions — Experiential Production Studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --black: #050508;
+  --deep: #08080f;
+  --white: #eef2ff;
+  --gold: #4f8fff;
+  --gold-light: #a0c4ff;
+  --mid: #4a4a5a;
+  --border: rgba(79,143,255,0.18);
+  --text-dim: rgba(238,242,255,0.5);
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ── CUSTOM CURSOR ── */
+.cursor {
+  width: 8px; height: 8px;
+  background: var(--gold);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: transform 0.1s ease;
+}
+
+.cursor-ring {
+  width: 36px; height: 36px;
+  border: 1px solid rgba(201,169,110,0.5);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: all 0.15s ease;
+}
+
+body:hover .cursor { opacity: 1; }
+
+/* ── GRAIN OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0; z-index: 9997;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 200px 200px;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 500;
+  padding: 2rem 3rem;
+  display: flex; align-items: center; justify-content: space-between;
+  background: linear-gradient(to bottom, rgba(8,8,8,0.95) 0%, transparent 100%);
+}
+
+.nav-logo {
+  display: flex; flex-direction: column; gap: 0.1rem;
+  text-decoration: none;
+}
+
+.nav-logo-main {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 300;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--white);
+  line-height: 1;
+}
+
+.nav-logo-sub {
+  font-size: 0.52rem;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: var(--gold);
+  font-weight: 500;
+}
+
+.nav-links {
+  display: flex; gap: 2.5rem; list-style: none; align-items: center;
+}
+
+.nav-links a {
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color 0.3s;
+  font-weight: 400;
+}
+
+.nav-links a:hover { color: var(--white); }
+
+.nav-cta {
+  border: 1px solid var(--border) !important;
+  padding: 0.6rem 1.4rem;
+  color: var(--gold) !important;
+  transition: all 0.3s !important;
+}
+
+.nav-cta:hover {
+  background: var(--gold) !important;
+  color: var(--black) !important;
+  border-color: var(--gold) !important;
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: flex-start;
+  padding: 10rem 3rem 5rem;
+  position: relative; overflow: hidden;
+}
+
+.hero-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 70% 40%, rgba(79,143,255,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 40% at 20% 80%, rgba(79,143,255,0.05) 0%, transparent 50%),
+    linear-gradient(160deg, #08080f 0%, #050508 100%);
+}
+
+/* Animated light beam */
+.hero-beam {
+  position: absolute;
+  top: -20%; right: 10%;
+  width: 1px; height: 140%;
+  background: linear-gradient(to bottom, transparent, rgba(79,143,255,0.2) 30%, rgba(79,143,255,0.08) 60%, transparent);
+  transform: rotate(-15deg);
+  animation: beamPulse 8s ease-in-out infinite;
+}
+
+.hero-beam:nth-child(2) {
+  right: 25%;
+  animation-delay: 3s;
+  opacity: 0.5;
+}
+
+@keyframes beamPulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+.hero-eyebrow {
+  font-size: 0.6rem;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 2rem;
+  position: relative;
+  display: flex; align-items: center; gap: 1rem;
+  animation: fadeUp 1s ease 0.2s both;
+}
+
+.hero-eyebrow::before {
+  content: '';
+  width: 40px; height: 1px;
+  background: var(--gold);
+  opacity: 0.5;
+}
+
+.hero h1 {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 300;
+  font-size: clamp(3.5rem, 8vw, 8rem);
+  line-height: 1.0;
+  letter-spacing: -0.01em;
+  max-width: 900px;
+  position: relative;
+  animation: fadeUp 1s ease 0.4s both;
+}
+
+.hero h1 em {
+  font-style: italic;
+  color: var(--gold-light);
+}
+
+.hero h1 .outline-text {
+  -webkit-text-stroke: 1px rgba(240,236,228,0.25);
+  color: transparent;
+}
+
+.hero-desc {
+  margin-top: 2.5rem;
+  max-width: 480px;
+  font-size: 0.85rem;
+  line-height: 1.9;
+  color: var(--text-dim);
+  animation: fadeUp 1s ease 0.6s both;
+}
+
+.hero-actions {
+  margin-top: 3rem;
+  display: flex; gap: 1.5rem; align-items: center;
+  animation: fadeUp 1s ease 0.8s both;
+}
+
+.btn-primary {
+  background: var(--gold);
+  color: var(--black);
+  padding: 1rem 2.5rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  font-weight: 600;
+  text-decoration: none;
+  border: none; cursor: none;
+  transition: all 0.3s;
+  display: inline-block;
+}
+
+.btn-primary:hover {
+  background: var(--gold-light);
+  transform: translateY(-2px);
+}
+
+.btn-ghost {
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-decoration: none;
+  display: flex; align-items: center; gap: 0.7rem;
+  transition: color 0.3s;
+}
+
+.btn-ghost::after {
+  content: '↓';
+  font-size: 1rem;
+  transition: transform 0.3s;
+}
+
+.btn-ghost:hover { color: var(--white); }
+.btn-ghost:hover::after { transform: translateY(4px); }
+
+.hero-scroll-line {
+  position: absolute; bottom: 3rem; left: 3rem;
+  display: flex; align-items: center; gap: 1rem;
+  animation: fadeUp 1s ease 1.2s both;
+}
+
+.scroll-line {
+  width: 1px; height: 60px;
+  background: linear-gradient(to bottom, transparent, var(--gold));
+  animation: lineGrow 2s ease 1.5s both;
+}
+
+@keyframes lineGrow {
+  from { height: 0; opacity: 0; }
+  to { height: 60px; opacity: 1; }
+}
+
+.scroll-text {
+  font-size: 0.55rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: var(--mid);
+  writing-mode: vertical-lr;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── CLIENT TICKER ── */
+.clients-bar {
+  padding: 2.5rem 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  position: relative;
+}
+
+.clients-bar::before,
+.clients-bar::after {
+  content: '';
+  position: absolute; top: 0; bottom: 0; width: 150px; z-index: 2;
+}
+
+.clients-bar::before { left: 0; background: linear-gradient(to right, var(--black), transparent); }
+.clients-bar::after { right: 0; background: linear-gradient(to left, var(--black), transparent); }
+
+.clients-ticker {
+  display: inline-flex; gap: 4rem; align-items: center;
+  animation: clientTicker 30s linear infinite;
+  white-space: nowrap;
+}
+
+.client-name {
+  font-size: 0.65rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--mid);
+  transition: color 0.3s;
+  font-weight: 400;
+}
+
+.client-name:hover { color: var(--gold); }
+
+.client-dot {
+  width: 3px; height: 3px;
+  background: var(--border);
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+@keyframes clientTicker {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ── SECTION SHARED ── */
+section { position: relative; }
+
+.section-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.45em;
+  text-transform: uppercase;
+  color: var(--gold);
+  display: flex; align-items: center; gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.section-label::before {
+  content: '';
+  width: 30px; height: 1px;
+  background: var(--gold);
+  opacity: 0.6;
+}
+
+/* ── INTRO / PHILOSOPHY ── */
+.philosophy {
+  padding: 8rem 3rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6rem;
+  align-items: center;
+}
+
+.philosophy-left {}
+
+.philosophy-left h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 300;
+  line-height: 1.1;
+  margin-bottom: 2rem;
+}
+
+.philosophy-left h2 em {
+  font-style: italic;
+  color: var(--gold-light);
+}
+
+.philosophy-left p {
+  font-size: 0.88rem;
+  line-height: 2;
+  color: var(--text-dim);
+  margin-bottom: 1.5rem;
+}
+
+.philosophy-right {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+}
+
+.stat-box {
+  background: var(--deep);
+  padding: 2.5rem 2rem;
+  display: flex; flex-direction: column; gap: 0.5rem;
+}
+
+.stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 3.5rem;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--gold);
+}
+
+.stat-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ── SERVICES ── */
+.services {
+  padding: 6rem 3rem 8rem;
+  background: var(--deep);
+}
+
+.services-header {
+  display: flex; justify-content: space-between; align-items: flex-end;
+  margin-bottom: 5rem;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 2rem;
+}
+
+.services-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  font-weight: 300;
+  line-height: 1.1;
+}
+
+.services-title em { font-style: italic; color: var(--gold-light); }
+
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  background: var(--border);
+}
+
+.service-card {
+  background: var(--deep);
+  padding: 3rem 2rem;
+  display: flex; flex-direction: column;
+  transition: background 0.4s;
+  position: relative;
+  overflow: hidden;
+}
+
+.service-card::before {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s ease;
+}
+
+.service-card:hover::before { transform: scaleX(1); }
+.service-card:hover { background: #111; }
+
+.service-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  color: var(--gold);
+  opacity: 0.5;
+  margin-bottom: 2rem;
+  font-weight: 300;
+}
+
+.service-icon {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  filter: grayscale(1) brightness(2);
+  opacity: 0.6;
+}
+
+.service-name {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.4rem;
+  font-weight: 400;
+  line-height: 1.2;
+  margin-bottom: 1rem;
+  color: var(--white);
+}
+
+.service-desc {
+  font-size: 0.75rem;
+  line-height: 1.8;
+  color: var(--text-dim);
+  flex: 1;
+}
+
+.service-link {
+  margin-top: 2rem;
+  font-size: 0.6rem;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-decoration: none;
+  display: flex; align-items: center; gap: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.service-card:hover .service-link { opacity: 1; }
+.service-link::after { content: '→'; }
+
+/* ── WORK / CLIENTS ── */
+.work {
+  padding: 8rem 3rem;
+}
+
+.work-header {
+  margin-bottom: 5rem;
+}
+
+.work-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  font-weight: 300;
+  line-height: 1.1;
+  max-width: 600px;
+}
+
+.work-title em { font-style: italic; color: var(--gold-light); }
+
+.work-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5px;
+  background: var(--border);
+  margin-bottom: 1.5px;
+}
+
+.work-grid-bottom {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5px;
+  background: var(--border);
+}
+
+.work-card {
+  background: var(--deep);
+  aspect-ratio: 4/3;
+  position: relative;
+  overflow: hidden;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  padding: 2rem;
+}
+
+.work-card-wide {
+  aspect-ratio: 16/7;
+}
+
+.work-card-bg {
+  position: absolute; inset: 0;
+  transition: transform 0.6s ease;
+}
+
+.work-card:hover .work-card-bg { transform: scale(1.04); }
+
+.work-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 50%, transparent 100%);
+}
+
+/* Gradient placeholders per card */
+.wc1 { background: linear-gradient(135deg, #050510 0%, #0a1535 40%, #4f8fff18 100%); }
+.wc2 { background: linear-gradient(135deg, #020510 0%, #051030 40%, #4f8fff22 100%); }
+.wc3 { background: linear-gradient(135deg, #050515 0%, #0c0830 40%, #7b6fff22 100%); }
+.wc4 { background: linear-gradient(135deg, #050510 0%, #071840 40%, #4f8fff15 100%); }
+.wc5 { background: linear-gradient(135deg, #080510 0%, #120a35 40%, #8f4fff18 100%); }
+
+.work-card-info {
+  position: relative; z-index: 2;
+}
+
+.work-card-client {
+  font-size: 0.58rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 0.4rem;
+}
+
+.work-card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 300;
+  line-height: 1.2;
+}
+
+.work-card-type {
+  font-size: 0.65rem;
+  color: var(--text-dim);
+  margin-top: 0.3rem;
+  letter-spacing: 0.1em;
+}
+
+/* ── PROCESS ── */
+.process {
+  padding: 8rem 3rem;
+  background: var(--deep);
+}
+
+.process-header { margin-bottom: 5rem; }
+
+.process-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  font-weight: 300;
+  line-height: 1.1;
+}
+
+.process-title em { font-style: italic; color: var(--gold-light); }
+
+.process-steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0;
+  border: 1px solid var(--border);
+}
+
+.process-step {
+  padding: 3.5rem 2.5rem;
+  border-right: 1px solid var(--border);
+  position: relative;
+}
+
+.process-step:last-child { border-right: none; }
+
+.step-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 5rem;
+  font-weight: 300;
+  color: rgba(201,169,110,0.08);
+  line-height: 1;
+  position: absolute;
+  top: 1.5rem; right: 1.5rem;
+}
+
+.step-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.6rem;
+  font-weight: 400;
+  margin-bottom: 1rem;
+  margin-top: 1rem;
+  line-height: 1.2;
+}
+
+.step-desc {
+  font-size: 0.78rem;
+  line-height: 1.9;
+  color: var(--text-dim);
+}
+
+.step-tag {
+  display: inline-block;
+  font-size: 0.55rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--gold);
+  border: 1px solid var(--border);
+  padding: 0.3rem 0.7rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ── TESTIMONIAL ── */
+.testimonial {
+  padding: 8rem 3rem;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: 6rem;
+  align-items: start;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+.testimonial-label { padding-top: 0.5rem; }
+
+.testimonial-content {}
+
+.testimonial-quote {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(1.5rem, 3vw, 2.5rem);
+  font-weight: 300;
+  line-height: 1.5;
+  font-style: italic;
+  color: var(--white);
+  margin-bottom: 2.5rem;
+}
+
+.testimonial-quote::before {
+  content: '"';
+  font-size: 6rem;
+  color: #4f8fff;
+  opacity: 0.3;
+  line-height: 0;
+  vertical-align: -2rem;
+  margin-right: 0.2rem;
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.testimonial-author {
+  display: flex; align-items: center; gap: 1.5rem;
+}
+
+.author-line {
+  width: 40px; height: 1px;
+  background: var(--gold);
+  opacity: 0.5;
+}
+
+.author-info {}
+.author-name {
+  font-size: 0.78rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.2rem;
+}
+
+.author-role {
+  font-size: 0.68rem;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+}
+
+.testimonial-nav {
+  display: flex; gap: 0.75rem; margin-top: 3rem;
+}
+
+.t-dot {
+  width: 24px; height: 2px;
+  background: var(--border);
+  cursor: none;
+  transition: all 0.3s;
+}
+
+.t-dot.active {
+  background: var(--gold);
+  width: 40px;
+}
+
+/* ── CONTACT CTA ── */
+.contact {
+  padding: 8rem 3rem;
+  text-align: center;
+  position: relative; overflow: hidden;
+}
+
+.contact-bg {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(ellipse 60% 60% at 50% 50%, rgba(79,143,255,0.07) 0%, transparent 70%);
+}
+
+.contact h2 {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(3rem, 7vw, 7rem);
+  font-weight: 300;
+  line-height: 1.05;
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.contact h2 em { font-style: italic; color: var(--gold-light); }
+
+.contact-sub {
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  line-height: 1.8;
+  max-width: 500px;
+  margin: 0 auto 3rem;
+  position: relative;
+}
+
+.contact-form {
+  max-width: 560px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.form-row { margin-bottom: 1rem; }
+
+.form-row input,
+.form-row select,
+.form-row textarea {
+  width: 100%;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  color: var(--white);
+  padding: 1rem 1.2rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.8rem;
+  outline: none;
+  transition: border-color 0.3s;
+  appearance: none;
+  letter-spacing: 0.05em;
+}
+
+.form-row input:focus,
+.form-row select:focus,
+.form-row textarea:focus { border-color: var(--gold); }
+.form-row input::placeholder,
+.form-row textarea::placeholder { color: var(--mid); }
+.form-row select option { background: #111; }
+.form-row textarea { resize: vertical; min-height: 100px; }
+
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+.btn-submit-main {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--gold);
+  color: var(--gold);
+  padding: 1.1rem;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 0.68rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  font-weight: 500;
+  cursor: none;
+  transition: all 0.3s;
+  margin-top: 0.5rem;
+}
+
+.btn-submit-main:hover {
+  background: var(--gold);
+  color: var(--black);
+}
+
+.success-state {
+  display: none;
+  padding: 3rem 0;
+  text-align: center;
+}
+
+.success-state .gold-line {
+  width: 40px; height: 1px;
+  background: var(--gold);
+  margin: 0 auto 1.5rem;
+}
+
+.success-state p {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.5rem;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--gold-light);
+}
+
+/* ── FOOTER ── */
+footer {
+  padding: 3rem;
+  border-top: 1px solid var(--border);
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 2rem;
+  align-items: center;
+}
+
+.footer-logo-main {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.2rem;
+  font-weight: 300;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+}
+
+.footer-logo-sub {
+  font-size: 0.5rem;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-top: 0.2rem;
+}
+
+.footer-links {
+  display: flex; gap: 2rem; justify-content: center; list-style: none;
+}
+
+.footer-links a {
+  font-size: 0.62rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--mid);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+
+.footer-links a:hover { color: var(--white); }
+
+.footer-copy {
+  text-align: right;
+  font-size: 0.6rem;
+  color: var(--mid);
+  letter-spacing: 0.1em;
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .services-grid { grid-template-columns: repeat(3, 1fr); }
+  .process-steps { grid-template-columns: repeat(2, 1fr); }
+  .process-step { border-bottom: 1px solid var(--border); }
+}
+
+@media (max-width: 768px) {
+  nav { padding: 1.2rem 1.5rem; }
+  .nav-links { display: none; }
+  .hero { padding: 7rem 1.5rem 4rem; }
+  .philosophy { grid-template-columns: 1fr; gap: 3rem; padding: 5rem 1.5rem; }
+  .services { padding: 4rem 1.5rem; }
+  .services-grid { grid-template-columns: 1fr 1fr; }
+  .services-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+  .work { padding: 5rem 1.5rem; }
+  .work-grid { grid-template-columns: 1fr 1fr; }
+  .work-grid-bottom { grid-template-columns: 1fr; }
+  .process { padding: 5rem 1.5rem; }
+  .process-steps { grid-template-columns: 1fr; border: none; gap: 1px; background: var(--border); }
+  .process-step { border-right: none; }
+  .testimonial { grid-template-columns: 1fr; gap: 2rem; padding: 5rem 1.5rem; }
+  .contact { padding: 5rem 1.5rem; }
+  .form-grid { grid-template-columns: 1fr; }
+  footer { grid-template-columns: 1fr; text-align: center; }
+  .footer-copy { text-align: center; }
+  .footer-links { justify-content: center; }
+  body { cursor: auto; }
+  .cursor, .cursor-ring { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- Cursor -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="nav-logo">
+    <div class="nav-logo-main">Lightbox</div>
+    <div class="nav-logo-sub">Productions</div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#contact" class="nav-cta">Start a Project</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-beam"></div>
+  <div class="hero-beam"></div>
+
+  <p class="hero-eyebrow">Experiential Production Studio — New York</p>
+  <h1>We craft<br><em>experiences</em><br>that <span class="outline-text">illuminate.</span></h1>
+  <p class="hero-desc">Lightbox brings a decade of immersive production expertise to any stage, venue, or space in the world. From projection mapping to full experiential production — we transform environments into unforgettable brand moments.</p>
+  <div class="hero-actions">
+    <a href="#contact" class="btn-primary">Start a Project</a>
+    <a href="#work" class="btn-ghost">View Our Work</a>
+  </div>
+
+  <div class="hero-scroll-line">
+    <div class="scroll-line"></div>
+    <span class="scroll-text">Scroll</span>
+  </div>
+</section>
+
+<!-- CLIENT TICKER -->
+<div class="clients-bar">
+  <div class="clients-ticker" id="clientTicker"></div>
+</div>
+
+<!-- PHILOSOPHY -->
+<section class="philosophy" id="about">
+  <div class="philosophy-left">
+    <div class="section-label">Our Philosophy</div>
+    <h2>Technology<br>meets <em>human</em><br>experience.</h2>
+    <p>For over a decade, Lightbox has been at the forefront of immersive event production — creating moments that live far beyond the room. Now, we bring that same standard of craft, technology, and hospitality to venues anywhere in the world.</p>
+    <p>We don't produce events. We engineer transformation — building the conditions for your audience to feel something they've never felt before.</p>
+  </div>
+  <div class="philosophy-right">
+    <div class="stat-box">
+      <div class="stat-num">10+</div>
+      <div class="stat-label">Years of Experience</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">500+</div>
+      <div class="stat-label">Events Produced</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">100+</div>
+      <div class="stat-label">Global Brands</div>
+    </div>
+    <div class="stat-box">
+      <div class="stat-num">∞</div>
+      <div class="stat-label">Possibilities</div>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="services-header">
+    <div>
+      <div class="section-label">What We Do</div>
+      <h2 class="services-title">Our <em>Services</em></h2>
+    </div>
+    <p style="max-width:320px; font-size:0.8rem; line-height:1.8; color:var(--text-dim);">Every engagement is custom-built. We bring the full breadth of Lightbox's capabilities to any space, at any scale.</p>
+  </div>
+  <div class="services-grid">
+    <div class="service-card">
+      <div class="service-num">01</div>
+      <div class="service-icon">◈</div>
+      <h3 class="service-name">Projection Mapping & Immersive Tech</h3>
+      <p class="service-desc">360° projection mapping, LED installations, real-time generative visuals, and custom AV systems that transform any space into a fully programmable canvas.</p>
+      <a href="#contact" class="service-link">Inquire</a>
+    </div>
+    <div class="service-card">
+      <div class="service-num">02</div>
+      <div class="service-icon">◎</div>
+      <h3 class="service-name">Event Production & Logistics</h3>
+      <p class="service-desc">End-to-end production management — from concept and technical design through load-in, execution, and strike. Seamless, precise, and built for complexity.</p>
+      <a href="#contact" class="service-link">Inquire</a>
+    </div>
+    <div class="service-card">
+      <div class="service-num">03</div>
+      <div class="service-icon">◉</div>
+      <h3 class="service-name">Experiential Brand Activations</h3>
+      <p class="service-desc">Pop-ups, installations, and live brand environments that create genuine emotional connections between your audience and your message.</p>
+      <a href="#contact" class="service-link">Inquire</a>
+    </div>
+    <div class="service-card">
+      <div class="service-num">04</div>
+      <div class="service-icon">◇</div>
+      <h3 class="service-name">Immersive Dining Experiences</h3>
+      <p class="service-desc">Multi-sensory dining events where technology, storytelling, and culinary artistry converge. Custom atmospheres, course-by-course narrative, and complete sensory design.</p>
+      <a href="#contact" class="service-link">Inquire</a>
+    </div>
+    <div class="service-card">
+      <div class="service-num">05</div>
+      <div class="service-icon">◐</div>
+      <h3 class="service-name">Hospitality & Food & Beverage</h3>
+      <p class="service-desc">Full-service hospitality programming — curated menus, beverage design, staffing, and service standards elevated to match the sophistication of your event.</p>
+      <a href="#contact" class="service-link">Inquire</a>
+    </div>
+  </div>
+</section>
+
+<!-- WORK -->
+<section class="work" id="work">
+  <div class="work-header">
+    <div class="section-label">Selected Work</div>
+    <h2 class="work-title">Brands that <em>trusted</em> us with their moment.</h2>
+  </div>
+  <div class="work-grid">
+    <div class="work-card">
+      <div class="work-card-bg wc1"></div>
+      <div class="work-card-info">
+        <div class="work-card-client">DHL</div>
+        <div class="work-card-title">Immersive Conference</div>
+        <div class="work-card-type">Projection Mapping · Event Production</div>
+      </div>
+    </div>
+    <div class="work-card">
+      <div class="work-card-bg wc2"></div>
+      <div class="work-card-info">
+        <div class="work-card-client">Citi</div>
+        <div class="work-card-title">Immersive Dining Experience</div>
+        <div class="work-card-type">Immersive Dining · Brand Activation</div>
+      </div>
+    </div>
+    <div class="work-card">
+      <div class="work-card-bg wc3"></div>
+      <div class="work-card-info">
+        <div class="work-card-client">TripleLift</div>
+        <div class="work-card-title">Interactive Summit</div>
+        <div class="work-card-type">Event Production · Hospitality</div>
+      </div>
+    </div>
+  </div>
+  <div class="work-grid-bottom" style="margin-top:1.5px;">
+    <div class="work-card work-card-wide">
+      <div class="work-card-bg wc4"></div>
+      <div class="work-card-info">
+        <div class="work-card-client">Visa</div>
+        <div class="work-card-title">Global Events & Experiences</div>
+        <div class="work-card-type">Experiential Activation · Immersive Tech</div>
+      </div>
+    </div>
+    <div class="work-card work-card-wide">
+      <div class="work-card-bg wc5"></div>
+      <div class="work-card-info">
+        <div class="work-card-client">BYOMA</div>
+        <div class="work-card-title">Brand Launch Event</div>
+        <div class="work-card-type">Brand Activation · Full Production</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process" id="process">
+  <div class="process-header">
+    <div class="section-label">How We Work</div>
+    <h2 class="process-title">From <em>vision</em><br>to execution.</h2>
+  </div>
+  <div class="process-steps">
+    <div class="process-step">
+      <div class="step-num">01</div>
+      <div class="step-tag">Discovery</div>
+      <h3 class="step-title">Vision & Brief</h3>
+      <p class="step-desc">We begin by deeply understanding your brand, audience, and objectives. Every detail of the brief shapes the experience we design together.</p>
+    </div>
+    <div class="process-step">
+      <div class="step-num">02</div>
+      <div class="step-tag">Design</div>
+      <h3 class="step-title">Concept & Creative</h3>
+      <p class="step-desc">Our creative and technical teams collaborate to produce a fully realized concept — spatial design, visual treatment, narrative arc, and technical specifications.</p>
+    </div>
+    <div class="process-step">
+      <div class="step-num">03</div>
+      <div class="step-tag">Production</div>
+      <h3 class="step-title">Build & Rehearse</h3>
+      <p class="step-desc">We manage every element of production — fabrication, AV integration, content creation, logistics, vendor coordination, and full technical rehearsal.</p>
+    </div>
+    <div class="process-step">
+      <div class="step-num">04</div>
+      <div class="step-tag">Delivery</div>
+      <h3 class="step-title">Execute & Elevate</h3>
+      <p class="step-desc">On event day, our team operates with precision and grace. We handle every detail so you can be fully present — and your guests can be fully immersed.</p>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="testimonial">
+  <div class="testimonial-label">
+    <div class="section-label">What Clients Say</div>
+  </div>
+  <div class="testimonial-content" id="testimonialContent">
+    <div class="testimonial-quote" id="tQuote">
+      Lightbox wasn't just a vendor — they were true partners in creating an unforgettable experience that elevated our client's brand in every sense.
+    </div>
+    <div class="testimonial-author">
+      <div class="author-line"></div>
+      <div class="author-info">
+        <div class="author-name" id="tName">President, Circle PR</div>
+        <div class="author-role" id="tRole">Subway Fresh Immersive Dinner</div>
+      </div>
+    </div>
+    <div class="testimonial-nav" id="tNav"></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-bg"></div>
+  <div class="section-label" style="justify-content:center; margin-bottom:2rem;">Start a Project</div>
+  <h2>Let's build<br>something <em>extraordinary.</em></h2>
+  <p class="contact-sub">Tell us about your event. Our production team will respond within 24 hours with a tailored approach.</p>
+  <div class="contact-form">
+    <form id="contactForm">
+      <div class="form-grid">
+        <div class="form-row"><input type="text" placeholder="Your Name" required></div>
+        <div class="form-row"><input type="email" placeholder="Email Address" required></div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row"><input type="text" placeholder="Company / Brand"></div>
+        <div class="form-row"><input type="text" placeholder="Event Date / Timeline"></div>
+      </div>
+      <div class="form-row">
+        <select>
+          <option value="" disabled selected>Service of Interest</option>
+          <option>Projection Mapping & Immersive Tech</option>
+          <option>Event Production & Logistics</option>
+          <option>Experiential Brand Activation</option>
+          <option>Immersive Dining Experience</option>
+          <option>Hospitality & Food & Beverage</option>
+          <option>Full-Service Production</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <textarea placeholder="Tell us about your vision — event type, scale, location, and any ideas you have..."></textarea>
+      </div>
+      <button type="submit" class="btn-submit-main">Send Your Brief →</button>
+    </form>
+    <div class="success-state" id="successState">
+      <div class="gold-line"></div>
+      <p>Your brief has been received.<br>We'll be in touch shortly.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-logo-main">Lightbox</div>
+    <div class="footer-logo-sub">Productions</div>
+  </div>
+  <ul class="footer-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <div class="footer-copy">© 2025 Lightbox Productions — New York</div>
+</footer>
+
+<script>
+// Custom cursor
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx = 0, my = 0, rx = 0, ry = 0;
+
+document.addEventListener('mousemove', e => {
+  mx = e.clientX; my = e.clientY;
+  cursor.style.left = mx + 'px';
+  cursor.style.top = my + 'px';
+});
+
+function animateRing() {
+  rx += (mx - rx) * 0.12;
+  ry += (my - ry) * 0.12;
+  ring.style.left = rx + 'px';
+  ring.style.top = ry + 'px';
+  requestAnimationFrame(animateRing);
+}
+animateRing();
+
+document.querySelectorAll('a, button').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    cursor.style.transform = 'translate(-50%, -50%) scale(2)';
+    ring.style.transform = 'translate(-50%, -50%) scale(1.5)';
+    ring.style.borderColor = 'rgba(201,169,110,0.8)';
+  });
+  el.addEventListener('mouseleave', () => {
+    cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+    ring.style.transform = 'translate(-50%, -50%) scale(1)';
+    ring.style.borderColor = 'rgba(201,169,110,0.5)';
+  });
+});
+
+// Client ticker
+const clients = ['Verizon','Visa','Spotify','Citi','DHL','BYOMA','L\'Oréal','Amazon','Coca-Cola','Deloitte','KPMG','The New York Times','Unicef','Sony','Pandora','HSBC','American Express','Facebook','CNN','Dove'];
+const tickerEl = document.getElementById('clientTicker');
+const items = [...clients, ...clients].map(c =>
+  `<span class="client-name">${c}</span><span class="client-dot"></span>`
+).join('');
+tickerEl.innerHTML = items;
+
+// Testimonials
+const testimonials = [
+  { quote: "Lightbox wasn't just a vendor — they were true partners in creating an unforgettable experience that elevated our client's brand in every sense.", name: "President, Circle PR", role: "Subway Fresh Immersive Dinner" },
+  { quote: "Your team's attention to detail, professionalism, and flexibility made the entire process seamless — and the final result truly exceeded our expectations.", name: "TripleLift", role: "Interactive Summit" },
+  { quote: "It is often rare to be blown away by a venue and staff here in NYC. Your team did that and more. Consummate professionals from beginning to end.", name: "BYOMA", role: "Brand Launch Event" },
+  { quote: "I would love to consider working with Lightbox again in the future. An excellent fit — elevated experience for the business.", name: "Director, Global Events — Visa", role: "Global Events & Experiences" }
+];
+
+let current = 0;
+const nav = document.getElementById('tNav');
+const quote = document.getElementById('tQuote');
+const tName = document.getElementById('tName');
+const tRole = document.getElementById('tRole');
+
+testimonials.forEach((_, i) => {
+  const dot = document.createElement('div');
+  dot.className = 't-dot' + (i === 0 ? ' active' : '');
+  dot.onclick = () => setTestimonial(i);
+  nav.appendChild(dot);
+});
+
+function setTestimonial(i) {
+  current = i;
+  quote.style.opacity = 0;
+  setTimeout(() => {
+    quote.textContent = testimonials[i].quote;
+    tName.textContent = testimonials[i].name;
+    tRole.textContent = testimonials[i].role;
+    quote.style.opacity = 1;
+  }, 300);
+  document.querySelectorAll('.t-dot').forEach((d, j) => d.classList.toggle('active', j === i));
+}
+
+quote.style.transition = 'opacity 0.3s ease';
+setInterval(() => setTestimonial((current + 1) % testimonials.length), 6000);
+
+// Contact form
+document.getElementById('contactForm').addEventListener('submit', e => {
+  e.preventDefault();
+  document.getElementById('contactForm').style.display = 'none';
+  document.getElementById('successState').style.display = 'block';
+});
+</script>
+</body>
+</html>
